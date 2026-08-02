@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A2D6C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>مرسام — مصمم الإنفوجرافيك العربي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Cairo:wght@400;600;800;900&family=Readex+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+<style id="appcss">
+:root{
+  --sh-ink:#12161F; --sh-ink-2:#1C2230; --sh-paper:#F6F4EF; --sh-card:#FFFFFF;
+  --sh-rule:#E2DDD2; --sh-gold:#B8862B; --sh-gold-soft:#F3E7CC; --sh-mut:#6D6759;
+  --r:14px; --pad:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--sh-paper); color:var(--sh-ink);
+  font-family:"Tajawal","SF Arabic","Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif;
+  font-size:15px; line-height:1.6; padding-bottom:26px;
+  overflow-x:hidden;
+}
+button,input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2.5px solid var(--sh-gold);outline-offset:2px;border-radius:6px}
+
+/* ---------- shell ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;background:var(--sh-ink);color:#F2EFE8;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)/6) 14px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 6px 22px rgba(18,22,31,.22);
+}
+.brand{display:flex;align-items:center;gap:9px;margin-inline-end:auto;min-width:0}
+.brand-seal{
+  width:30px;height:30px;border-radius:50%;flex:none;
+  background:conic-gradient(from 210deg,#E8C468,#9C6E1C,#F2DC9C,#8A5F17,#E8C468);
+  display:flex;align-items:center;justify-content:center;color:#3B2708;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);
+}
+.brand-seal svg{width:16px;height:16px}
+.brand b{font-size:16px;font-weight:800;letter-spacing:-.2px;display:block;line-height:1.15}
+.brand small{font-size:10.5px;color:#9E9789;letter-spacing:.4px}
+.tb-btn{
+  width:38px;height:38px;border-radius:11px;background:#242B3B;color:#EFEAE0;
+  display:flex;align-items:center;justify-content:center;flex:none;
+  transition:background .15s,transform .1s;
+}
+.tb-btn:active{transform:scale(.94)}
+.tb-btn.gold{background:linear-gradient(180deg,#E2B75A,#B8862B);color:#241704}
+.tb-btn svg{width:19px;height:19px}
+
+.segwrap{padding:12px 14px 0;max-width:1180px;margin:0 auto}
+.seg{display:flex;background:#EAE5DA;border-radius:12px;padding:4px;gap:4px}
+.seg button{
+  flex:1;padding:9px 6px;border-radius:9px;font-weight:800;font-size:13.5px;
+  color:var(--sh-mut);display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.seg button svg{width:16px;height:16px}
+.seg button[aria-selected="true"]{background:var(--sh-card);color:var(--sh-ink);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+.layout{max-width:1180px;margin:0 auto;padding:14px;display:grid;gap:16px;grid-template-columns:1fr}
+@media(min-width:1000px){
+  .layout{grid-template-columns:minmax(360px,420px) 1fr;align-items:start}
+  .seg{display:none}
+  .pane{display:block !important}
+  .editor{position:sticky;top:78px;max-height:calc(100vh - 96px);overflow:auto}
+}
+.pane{display:none}
+.pane.on{display:block}
+
+/* ---------- editor ---------- */
+.editor{display:flex;flex-direction:column;gap:10px}
+.acc{background:var(--sh-card);border:1px solid var(--sh-rule);border-radius:var(--r);overflow:hidden}
+.acc>summary{
+  list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:10px;
+  font-weight:800;font-size:14px;
+}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary .chev{margin-inline-start:auto;transition:transform .2s;color:var(--sh-mut)}
+.acc[open]>summary .chev{transform:rotate(180deg)}
+.acc>summary .chev svg{width:16px;height:16px;display:block}
+.acc>summary .ico{
+  width:28px;height:28px;border-radius:8px;background:var(--sh-gold-soft);color:#7A5714;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.acc>summary .ico svg{width:15px;height:15px}
+.acc-body{padding:0 14px 14px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--sh-rule);padding-top:14px}
+
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld>label{font-size:11.5px;font-weight:700;color:var(--sh-mut);letter-spacing:.2px}
+.inp{
+  width:100%;padding:10px 12px;border:1.5px solid var(--sh-rule);border-radius:10px;
+  background:#FCFBF8;font-size:14px;font-weight:500;transition:border-color .15s,background .15s;
+}
+.inp:focus{outline:none;border-color:var(--sh-gold);background:#fff}
+textarea.inp{resize:vertical;min-height:64px;line-height:1.65}
+.row{display:flex;gap:8px}
+.row>*{flex:1;min-width:0}
+
+.item{border:1.5px solid var(--sh-rule);border-radius:12px;padding:11px;background:#FCFBF8;display:flex;flex-direction:column;gap:9px}
+.item-head{display:flex;align-items:center;gap:8px}
+.item-num{
+  font-size:11px;font-weight:800;color:var(--sh-mut);background:#EDE8DC;
+  border-radius:6px;padding:2px 7px;
+}
+.mini{width:30px;height:30px;border-radius:9px;background:#EDE8DC;color:#5A5446;display:flex;align-items:center;justify-content:center;flex:none}
+.mini svg{width:15px;height:15px}
+.mini.danger{background:#FBE9E9;color:#A32B2B}
+.mini:active{transform:scale(.92)}
+.iconbtn{
+  display:flex;align-items:center;gap:7px;padding:8px 10px;border:1.5px solid var(--sh-rule);
+  border-radius:10px;background:#fff;font-size:12.5px;font-weight:700;
+}
+.iconbtn svg{width:17px;height:17px;color:var(--sh-gold)}
+.addbtn{
+  width:100%;padding:11px;border:1.5px dashed #CFC8B8;border-radius:11px;
+  font-weight:800;font-size:13px;color:#6B6555;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:#FAF8F3;
+}
+.addbtn svg{width:16px;height:16px}
+.addbtn:active{background:#F2EEE4}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  padding:8px 12px;border-radius:999px;border:1.5px solid var(--sh-rule);background:#fff;
+  font-size:12.5px;font-weight:700;
+}
+.chip[aria-pressed="true"]{border-color:var(--sh-ink);background:var(--sh-ink);color:#F5F1E8}
+.swatches{display:flex;flex-wrap:wrap;gap:9px}
+.sw{width:44px;height:44px;border-radius:12px;border:2.5px solid transparent;position:relative;overflow:hidden}
+.sw[aria-pressed="true"]{border-color:var(--sh-ink);box-shadow:0 0 0 2px #fff inset}
+.sw i{position:absolute;inset:0;display:block}
+.sw i:last-child{inset:auto 0 0 0;height:38%}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:700}
+.sw-track{width:46px;height:27px;border-radius:999px;background:#D8D2C4;position:relative;transition:background .18s;flex:none}
+.sw-track b{position:absolute;top:3px;right:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw-track[aria-pressed="true"]{background:var(--sh-gold)}
+.sw-track[aria-pressed="true"] b{transform:translateX(-19px)}
+.hint{font-size:11.5px;color:var(--sh-mut);line-height:1.55}
+
+/* ---------- stage ---------- */
+.stage{width:100%;overflow:hidden}
+.stage-inner{width:800px;transform-origin:top right;will-change:transform}
+.stage-note{
+  display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--sh-mut);
+  padding:0 2px 9px;font-weight:600;
+}
+.stage-note svg{width:14px;height:14px;flex:none}
+
+/* ---------- the artwork ---------- */
+#canvas{
+  --page:#F4F6FA; --card:#FFFFFF; --line:#DCE4F0; --ink:#0A2D6C; --ink2:#123C8F;
+  --gold:#F0C24B; --gold2:#B98328; --crest:#4A0A16; --tx:#0B1B3A; --txs:#5A6480; --oncard:#0B1B3A;
+  width:800px;min-height:1120px;background:var(--page);color:var(--tx);
+  border-radius:26px;position:relative;overflow:hidden;
+  padding:26px 26px 22px;display:flex;flex-direction:column;justify-content:space-between;gap:18px;
+  box-shadow:0 18px 46px rgba(18,22,31,.16);border:1px solid var(--line);
+  font-family:"Tajawal","SF Arabic",Tahoma,"Noto Sans Arabic",sans-serif;
+}
+#canvas[data-theme="emerald_gold"]{--page:#F1F7F3;--line:#D5E6DC;--ink:#064E3B;--ink2:#0B6B52;--gold:#EFC94C;--gold2:#A9812B;--crest:#12352A;--tx:#06281F;--txs:#4C6B60;--oncard:#06281F}
+#canvas[data-theme="ruby_gold"]{--page:#FAF3F3;--line:#EEDADA;--ink:#7A1220;--ink2:#9B1B2C;--gold:#F3C55A;--gold2:#A8791F;--crest:#3E0A10;--tx:#3A0D14;--txs:#7C5157;--oncard:#3A0D14}
+#canvas[data-theme="sapphire_silver"]{--page:#F2F6F9;--line:#D9E4EC;--ink:#0C4A6E;--ink2:#14618E;--gold:#CBD6E1;--gold2:#8CA1B4;--crest:#0B2A3F;--tx:#0A2436;--txs:#54697C;--oncard:#0A2436}
+#canvas[data-theme="midnight_dark"]{--page:#0E1420;--card:#18202F;--line:#2A3547;--ink:#1B2740;--ink2:#263552;--gold:#E8B54B;--gold2:#9C7526;--crest:#241016;--tx:#E9EEF7;--txs:#98A5BA;--oncard:#E9EEF7}
+
+#canvas .arc{
+  position:absolute;top:-140px;left:-90px;right:-90px;height:250px;border-radius:0 0 50% 50%;
+  background:linear-gradient(105deg,var(--ink) 0%,var(--ink2) 52%,var(--ink) 100%);
+}
+#canvas .pattern{
+  position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(150,110,30,.22) 1.4px, transparent 1.6px),
+    radial-gradient(circle at 50% 50%, rgba(20,45,100,.10) 1.1px, transparent 1.3px);
+  background-size:26px 26px,26px 26px;background-position:0 0,13px 13px;
+}
+#canvas .stack{position:relative;z-index:2;display:flex;flex-direction:column;gap:18px}
+
+/* logos */
+#canvas .logos{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding-top:6px}
+#canvas .logo{
+  background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:12px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-height:104px;justify-content:center;
+  box-shadow:0 3px 10px rgba(10,25,60,.06);
+}
+#canvas .logo .mark{
+  width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,var(--ink2),var(--ink));color:#fff;
+}
+#canvas .logo .mark svg{width:23px;height:23px}
+#canvas .logo.alt .mark{background:linear-gradient(160deg,var(--gold),var(--gold2));color:#2E1D02}
+#canvas .logo img{max-height:44px;max-width:112px;object-fit:contain}
+#canvas .logo b{font-size:13px;font-weight:800;color:var(--oncard);line-height:1.35}
+#canvas .logo span{font-size:10.5px;color:var(--txs)}
+
+/* the seal — signature element */
+#canvas .seal{
+  width:118px;height:118px;border-radius:50%;position:relative;flex:none;
+  background:conic-gradient(from 200deg,#F6E3AE,var(--gold2),#FBF0D2,#8E6418,#F0CE72,var(--gold2),#F6E3AE);
+  padding:5px;box-shadow:0 10px 24px rgba(90,60,10,.32);
+}
+#canvas .seal::after{
+  content:"";position:absolute;inset:9px;border-radius:50%;
+  border:1.5px dashed rgba(255,232,170,.55);
+  border-color:color-mix(in srgb, var(--gold) 55%, transparent);pointer-events:none;
+}
+#canvas .seal-in{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 34% 26%, #6B4A12 0%, #3E2A08 55%, #241701 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:#F3DFAA;text-align:center;padding:12px;
+  box-shadow:inset 0 3px 10px rgba(0,0,0,.6);
+}
+#canvas .seal-in svg{width:27px;height:27px;color:#F0CE72}
+#canvas .seal-in b{font-size:11px;font-weight:900;line-height:1.22;max-width:92px;overflow-wrap:break-word;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#canvas .seal-in span{font-size:8.5px;color:#C9AE72;letter-spacing:.3px}
+
+/* title plate */
+#canvas .plate{
+  background:linear-gradient(100deg,var(--gold2),var(--gold),#FDF2CE,var(--gold),var(--gold2));
+  padding:5px;border-radius:22px;box-shadow:0 8px 22px rgba(90,60,10,.2);
+}
+#canvas .plate-in{
+  background:var(--crest);
+  border:2px solid var(--gold);
+  border-color:color-mix(in srgb,var(--gold) 75%, transparent);
+  border-radius:17px;padding:16px 24px;text-align:center;
+}
+#canvas h1{
+  margin:0;font-size:40px;font-weight:900;line-height:1.28;color:#F8ECC9;letter-spacing:-.5px;
+  text-shadow:0 2px 3px rgba(0,0,0,.45);
+}
+#canvas .sub{margin:0;font-size:21px;font-weight:800;color:var(--tx);text-align:center;line-height:1.5}
+#canvas .badge{
+  align-self:center;display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,var(--ink2),var(--ink));color:#fff;
+  padding:10px 22px;border-radius:999px;font-weight:800;font-size:14px;
+  border:1px solid rgba(255,255,255,.28);box-shadow:0 6px 16px rgba(10,25,60,.22);
+}
+#canvas .badge svg{width:16px;height:16px;color:var(--gold)}
+#canvas .lede{
+  background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px 20px;
+  text-align:center;font-size:16px;font-weight:700;color:var(--oncard);line-height:1.75;
+}
+
+/* section cards */
+#canvas .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+#canvas .cards.c4{grid-template-columns:repeat(4,1fr)}
+#canvas .cards.c3{grid-template-columns:repeat(3,1fr)}
+#canvas .card{
+  background:linear-gradient(150deg,var(--ink2),var(--ink));color:#fff;border-radius:18px;
+  padding:13px;display:flex;align-items:flex-start;gap:10px;
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 5px 14px rgba(10,25,60,.2);
+}
+#canvas .card .cico{
+  width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;color:var(--gold);flex:none;
+}
+#canvas .card .cico svg{width:19px;height:19px}
+#canvas .card b{display:block;font-size:13px;color:var(--gold);font-weight:800;margin-bottom:2px}
+#canvas .card p{margin:0;font-size:12px;line-height:1.55;color:#E7ECF7}
+
+/* ribbon */
+#canvas .ribbon{display:flex;align-items:center;justify-content:center;gap:10px}
+#canvas .ribbon svg{width:20px;height:20px;color:var(--txs)}
+#canvas .ribbon span{
+  background:linear-gradient(180deg,var(--ink2),var(--ink));color:#fff;
+  padding:9px 26px;border-radius:999px;font-weight:800;font-size:15px;
+  box-shadow:0 5px 14px rgba(10,25,60,.2);
+}
+
+/* notes */
+#canvas .notes{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:9px}
+#canvas .note{
+  display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:13px;
+  background:var(--page);
+  background:color-mix(in srgb, var(--page) 70%, var(--card));border:1px solid var(--line);
+}
+#canvas .note>b{font-size:13px;font-weight:800;width:34%;color:var(--oncard)}
+#canvas .note .vals{display:flex;gap:8px;flex:1;justify-content:flex-end}
+#canvas .tag{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:9px;
+  font-size:12px;font-weight:800;border:1.5px solid;
+}
+#canvas .tag svg{width:14px;height:14px}
+#canvas .tag.no{background:#FDECEC;border-color:#F3C3C3;color:#A02020}
+#canvas .tag.yes{background:#E9F8EF;border-color:#B7E5C9;color:#166534}
+
+/* conditions */
+#canvas .crest-bar{align-self:center;background:linear-gradient(100deg,var(--gold2),var(--gold),#FDF2CE,var(--gold),var(--gold2));padding:4px;border-radius:16px;max-width:520px;width:100%}
+#canvas .crest-bar div{background:var(--crest);border-radius:12px;padding:9px 18px;text-align:center;color:#F5E5BC;font-weight:800;font-size:15px}
+#canvas .conds{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+#canvas .cond{
+  background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:14px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;
+}
+#canvas .cond .cico{width:36px;height:36px;border-radius:12px;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center}
+#canvas .cond .cico svg{width:18px;height:18px}
+#canvas .cond b{font-size:12.5px;font-weight:800;color:var(--oncard);line-height:1.4}
+
+/* footer */
+#canvas .foot{
+  position:relative;z-index:2;align-self:center;width:100%;max-width:640px;
+  background:linear-gradient(100deg,var(--ink),var(--ink2),var(--ink));color:#fff;
+  border-radius:999px;padding:13px 26px;display:flex;align-items:center;justify-content:center;gap:10px;
+  border:1px solid rgba(255,255,255,.26);box-shadow:0 8px 20px rgba(10,25,60,.26);
+  font-weight:800;font-size:14px;text-align:center;
+}
+#canvas .foot svg{width:18px;height:18px;color:var(--gold);flex:none}
+#canvas [contenteditable="true"]{outline:none;border-radius:6px}
+#canvas [contenteditable="true"]:focus{box-shadow:0 0 0 2px var(--gold)}
+
+/* ---------- icon picker ---------- */
+.sheet{position:fixed;inset:0;z-index:60;display:none}
+.sheet.on{display:block}
+.sheet-bg{position:absolute;inset:0;background:rgba(18,22,31,.55)}
+.sheet-body{
+  position:absolute;left:0;right:0;bottom:0;max-height:76vh;background:var(--sh-card);
+  border-radius:20px 20px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:12px;
+}
+@media(min-width:700px){.sheet-body{max-width:520px;margin:0 auto;bottom:auto;top:50%;transform:translateY(-50%);border-radius:20px;left:16px;right:16px}}
+.sheet-head{display:flex;align-items:center;gap:10px;font-weight:800}
+.icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:9px;overflow:auto;padding-bottom:6px}
+.icon-grid button{
+  aspect-ratio:1;border:1.5px solid var(--sh-rule);border-radius:13px;background:#FCFBF8;
+  display:flex;align-items:center;justify-content:center;color:#2A3242;
+}
+.icon-grid button svg{width:21px;height:21px}
+.icon-grid button:active{background:var(--sh-gold-soft)}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(24px);
+  background:var(--sh-ink);color:#F4F0E7;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:700;
+  z-index:80;opacity:0;transition:opacity .22s,transform .22s;pointer-events:none;max-width:88vw;text-align:center;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media print{
+  .topbar,.segwrap,.editor,.stage-note,.toast,.sheet{display:none !important}
+  body{background:#fff;padding:0}
+  .layout{padding:0;display:block}
+  #paneView{display:block !important}
+  .stage-inner{transform:scale(.945) !important;transform-origin:top center}
+  #canvas{box-shadow:none;border-radius:0;border:0}
+  @page{size:A4 portrait;margin:6mm}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-seal" id="brandSeal"></span>
+    <span><b>مِرسام</b><small>مصمم الإنفوجرافيك العربي</small></span>
+  </div>
+  <button class="tb-btn" id="btnOpen" title="فتح ملف تصميم" aria-label="فتح ملف تصميم"></button>
+  <button class="tb-btn" id="btnSave" title="حفظ ملف تصميم" aria-label="حفظ ملف تصميم"></button>
+  <button class="tb-btn" id="btnPrint" title="طباعة أو حفظ PDF" aria-label="طباعة أو حفظ PDF"></button>
+  <button class="tb-btn gold" id="btnPng" title="تنزيل صورة" aria-label="تنزيل صورة"></button>
+</header>
+
+<div class="segwrap">
+  <div class="seg" role="tablist">
+    <button id="tabEdit" role="tab" aria-selected="true" aria-controls="paneEdit">تحرير</button>
+    <button id="tabView" role="tab" aria-selected="false" aria-controls="paneView">معاينة</button>
+  </div>
+</div>
+
+<main class="layout">
+  <section class="pane on editor" id="paneEdit" role="tabpanel"></section>
+  <section class="pane" id="paneView" role="tabpanel">
+    <p class="stage-note" id="stageNote"></p>
+    <div class="stage"><div class="stage-inner" id="stageInner"></div></div>
+  </section>
+</main>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="اختيار أيقونة">
+  <div class="sheet-bg" data-close></div>
+  <div class="sheet-body">
+    <div class="sheet-head"><span>اختر أيقونة</span><button class="mini" data-close style="margin-inline-start:auto" aria-label="إغلاق"></button></div>
+    <div class="icon-grid" id="iconGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="filePicker" accept="application/json,.json" hidden>
+<input type="file" id="imgPicker" accept="image/*" hidden>
+
+<script>
+"use strict";
+
+/* ============================================================
+   1) مكتبة الأيقونات (SVG مدمجة — تعمل بدون إنترنت)
+   ============================================================ */
+const P = {
+  sparkles:'<path d="M12 3l1.9 4.7L18.6 9.6l-4.7 1.9L12 16.2l-1.9-4.7L5.4 9.6l4.7-1.9L12 3z"/><path d="M18.6 14.6l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z"/>',
+  shield:'<path d="M12 3.2l7 2.9v5c0 4.5-3 8-7 9.9-4-1.9-7-5.4-7-9.9v-5l7-2.9z"/><path d="M9 12l2.1 2.1L15.2 10"/>',
+  cap:'<path d="M2.5 9L12 5.1 21.5 9 12 12.9 2.5 9z"/><path d="M6.2 11.1V15c0 1.7 2.6 3 5.8 3s5.8-1.3 5.8-3v-3.9"/><path d="M21.5 9v4.6"/>',
+  book:'<path d="M12 6.6C10.5 5.3 8.4 4.6 6 4.6H3.2v13H6c2.4 0 4.5.7 6 2 1.5-1.3 3.6-2 6-2h2.8v-13H18c-2.4 0-4.5.7-6 2z"/><path d="M12 6.6v13"/>',
+  brain:'<path d="M12 5.2a3 3 0 0 0-5.9.6 3 3 0 0 0-1.9 2.9 3 3 0 0 0 1 2.2v1.7a3 3 0 0 0 4 2.8v4.4H12z"/><path d="M12 5.2a3 3 0 0 1 5.9.6 3 3 0 0 1 1.9 2.9 3 3 0 0 1-1 2.2v1.7a3 3 0 0 1-4 2.8v4.4H12"/>',
+  target:'<circle cx="12" cy="12" r="8.3"/><circle cx="12" cy="12" r="4.3"/><circle cx="12" cy="12" r=".9"/>',
+  trend:'<path d="M3.4 16.8l5.8-5.8 3.6 3.6 7.2-7.2"/><path d="M14.4 7.4H20v5.6"/>',
+  alert:'<path d="M12 4.2l8.6 15.4H3.4L12 4.2z"/><path d="M12 10.2v4"/><path d="M12 17.2v.05"/>',
+  calendar:'<rect x="3.3" y="5.2" width="17.4" height="15.6" rx="2.4"/><path d="M8 3.2v4M16 3.2v4M3.3 10h17.4"/>',
+  users:'<path d="M15.6 20v-1.6c0-2.2-1.7-3.9-3.9-3.9H8.1c-2.2 0-3.9 1.7-3.9 3.9V20"/><circle cx="9.9" cy="7.3" r="3.1"/><path d="M19.8 20v-1.6c0-1.8-1.2-3.3-2.8-3.8"/><path d="M15.4 4.4a3.1 3.1 0 0 1 0 5.6"/>',
+  building:'<rect x="4.2" y="3.2" width="15.6" height="17.6" rx="1.8"/><path d="M8.4 7.4h2.2M13.4 7.4h2.2M8.4 11.4h2.2M13.4 11.4h2.2M8.4 15.4h2.2M13.4 15.4h2.2"/><path d="M9.8 20.8v-2.6h4.4v2.6"/>',
+  school:'<path d="M12 3.4l8.6 4.6L12 12.6 3.4 8 12 3.4z"/><path d="M6 10.4V16c0 1.6 2.7 2.9 6 2.9s6-1.3 6-2.9v-5.6"/>',
+  laptop:'<rect x="4" y="5" width="16" height="10.4" rx="1.8"/><path d="M2.2 19h19.6"/>',
+  award:'<circle cx="12" cy="9" r="4.9"/><path d="M9.2 13.3L8 20.9l4-2.2 4 2.2-1.2-7.6"/>',
+  check:'<circle cx="12" cy="12" r="8.4"/><path d="M8.4 12.3l2.6 2.5 4.6-5"/>',
+  star:'<path d="M12 4l2.5 5.1 5.6.8-4.1 4 1 5.6L12 16.8 6.9 19.5l1-5.6-4.1-4 5.7-.8L12 4z"/>',
+  heart:'<path d="M12 20.2s-7.2-4.5-7.2-9.4A4.1 4.1 0 0 1 12 8.1a4.1 4.1 0 0 1 7.2 2.7c0 4.9-7.2 9.4-7.2 9.4z"/>',
+  bulb:'<path d="M9.2 18.2h5.6M10.2 21h3.6"/><path d="M12 3.2a6.1 6.1 0 0 0-3.6 11c.6.5.9 1.2.9 1.9v.1h5.4V16c0-.7.3-1.4.9-1.9A6.1 6.1 0 0 0 12 3.2z"/>',
+  clock:'<circle cx="12" cy="12" r="8.4"/><path d="M12 7v5.3l3.2 2"/>',
+  pin:'<path d="M12 21.2s7-5.7 7-11.1a7 7 0 1 0-14 0c0 5.4 7 11.1 7 11.1z"/><circle cx="12" cy="10" r="2.6"/>',
+  phone:'<path d="M6.2 3.2h2.9l1.9 4.9-2.2 1.3a12.3 12.3 0 0 0 5.8 5.8l1.3-2.2 4.9 1.9V18a2 2 0 0 1-2.2 2C10.8 19.3 4.7 13.2 4.2 5.4a2 2 0 0 1 2-2.2z"/>',
+  mail:'<rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2.2"/><path d="M3.8 7.2L12 13l8.2-5.8"/>',
+  file:'<path d="M14 3.2H7.2a2 2 0 0 0-2 2v13.6a2 2 0 0 0 2 2h9.6a2 2 0 0 0 2-2V8.2L14 3.2z"/><path d="M14 3.2v5h5"/><path d="M8.8 13.2h6.4M8.8 16.6h4.4"/>',
+  wallet:'<rect x="3.2" y="6.2" width="17.6" height="12.6" rx="2.6"/><path d="M3.2 10.2h17.6"/><circle cx="16.6" cy="14.4" r="1.3"/>',
+  home:'<path d="M3.8 11L12 4.2 20.2 11"/><path d="M6.2 9.6v10.6h11.6V9.6"/><path d="M10 20.2v-4.8h4v4.8"/>',
+  car:'<path d="M3.4 16.2v-3.8l2-5h13.2l2 5v3.8H3.4z"/><path d="M5.4 16.2v2.6h2.8v-2.6M15.8 16.2v2.6h2.8v-2.6"/><circle cx="7.6" cy="13.6" r="1.2"/><circle cx="16.4" cy="13.6" r="1.2"/>',
+  case:'<rect x="3.2" y="7.2" width="17.6" height="12.6" rx="2.2"/><path d="M8.8 7.2V5.6a1.6 1.6 0 0 1 1.6-1.6h3.2a1.6 1.6 0 0 1 1.6 1.6v1.6"/><path d="M3.2 12h17.6"/>',
+  globe:'<circle cx="12" cy="12" r="8.4"/><path d="M3.6 12h16.8"/><path d="M12 3.6c2.4 2.4 3.7 5.3 3.7 8.4S14.4 18 12 20.4c-2.4-2.4-3.7-5.3-3.7-8.4S9.6 6 12 3.6z"/>',
+  key:'<circle cx="8" cy="15.2" r="3.5"/><path d="M10.5 12.7L20 3.4"/><path d="M17.2 6.2l2 2M15 8.4l2 2"/>',
+  lock:'<rect x="5.2" y="10.2" width="13.6" height="9.8" rx="2.2"/><path d="M8.2 10.2V7.6a3.8 3.8 0 0 1 7.6 0v2.6"/>',
+  camera:'<path d="M4 8.2h3.2L8.6 6h6.8l1.4 2.2H20a1 1 0 0 1 1 1v8.6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.2a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.4" r="3.2"/>',
+  gift:'<rect x="3.4" y="8.2" width="17.2" height="4" rx="1.2"/><path d="M5.2 12.2v8.2h13.6v-8.2"/><path d="M12 8.2v12.2"/><path d="M12 8.2S10.6 4.2 8.6 4.2a2 2 0 0 0 0 4H12zM12 8.2s1.4-4 3.4-4a2 2 0 0 1 0 4H12z"/>',
+  leaf:'<path d="M5 19.2C3.9 12 8 4.8 19.2 4.8c0 11.2-7.2 15.4-14.2 14.4z"/><path d="M5 19.2c3-4.1 6.2-6.3 10.2-7.8"/>',
+  flame:'<path d="M12 3.2s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3.2 1-3.2s.2 2.2 1.7 2.2S12 6.4 12 3.2z"/>',
+  zap:'<path d="M13.2 3.2L5 14.4h6l-1.2 6.4 8.2-11.2h-6l1.2-6.4z"/>',
+  crown:'<path d="M4 8.2l3.6 4.2L12 5l4.4 7.4L20 8.2 18.4 19H5.6L4 8.2z"/>',
+  clipboard:'<rect x="6" y="4.4" width="12" height="16.4" rx="2.2"/><path d="M9.2 4.4V3.4h5.6v1"/><path d="M9.4 12.4l2.1 2.1 3.8-4.2"/>',
+  arrowDown:'<path d="M12 4.6v14.4"/><path d="M6.2 13.6L12 19.4l5.8-5.8"/>',
+  bell:'<path d="M18 15.6V10a6 6 0 1 0-12 0v5.6L4.4 18h15.2L18 15.6z"/><path d="M10 20.4a2.2 2.2 0 0 0 4 0"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  plus:'<path d="M12 5.4v13.2M5.4 12h13.2"/>',
+  trash:'<path d="M4.4 6.6h15.2"/><path d="M9.4 6.6V4.9h5.2v1.7"/><path d="M6.6 6.6l1 12.5h8.8l1-12.5"/>',
+  up:'<path d="M12 19V5"/><path d="M6 11l6-6 6 6"/>',
+  down:'<path d="M12 5v14"/><path d="M6 13l6 6 6-6"/>',
+  image:'<rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.4"/><circle cx="8.6" cy="9.6" r="1.6"/><path d="M3.8 17l4.8-4.6 3.4 3.2 3-2.6 5.2 4.6"/>',
+  download:'<path d="M12 3.6v11.2"/><path d="M7 10.2l5 5 5-5"/><path d="M4.2 19.6h15.6"/>',
+  print:'<path d="M7 9V4h10v5"/><rect x="3.6" y="9" width="16.8" height="7.4" rx="2"/><path d="M7 14.4h10v5.8H7z"/>',
+  folder:'<path d="M3.4 6.6a2 2 0 0 1 2-2h3.4l2 2.4h7.8a2 2 0 0 1 2 2v8.6a2 2 0 0 1-2 2H5.4a2 2 0 0 1-2-2z"/>',
+  save:'<path d="M5.4 4.4h10.2l3.4 3.4v11.8H5.4z"/><path d="M8.6 4.4v5h6.2v-5"/><path d="M8.6 19.6v-5h6.8v5"/>',
+  type:'<path d="M5 6.6V4.8h14v1.8"/><path d="M12 4.8v14.4"/><path d="M9 19.2h6"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/>',
+  palette:'<path d="M12 3.4a8.6 8.6 0 0 0 0 17.2c1.3 0 1.9-.9 1.9-1.8 0-1.4-1.1-1.6-1.1-2.7 0-1 .8-1.7 1.9-1.7h1.5a4.4 4.4 0 0 0 4.4-4.4c0-3.6-3.9-6.6-8.6-6.6z"/><circle cx="8" cy="10" r="1.1"/><circle cx="11.4" cy="7.2" r="1.1"/><circle cx="15.4" cy="8.6" r="1.1"/>',
+  layers:'<path d="M12 3.6l8.4 4.2L12 12 3.6 7.8 12 3.6z"/><path d="M3.6 12.4L12 16.6l8.4-4.2"/><path d="M3.6 16.6L12 20.8l8.4-4.2"/>',
+  seal:'<path d="M12 3.2l2.2 1.7 2.7-.4 1 2.6 2.4 1.3-.8 2.7.8 2.7-2.4 1.3-1 2.6-2.7-.4L12 20.8l-2.2-1.7-2.7.4-1-2.6-2.4-1.3.8-2.7-.8-2.7 2.4-1.3 1-2.6 2.7.4L12 3.2z"/><path d="M9.4 12.2l1.9 1.9 3.4-3.7"/>'
+};
+const ICON_KEYS = ['seal','shield','cap','book','brain','target','trend','alert','calendar','users','building','school','laptop','award','check','star','heart','bulb','clock','pin','phone','mail','file','wallet','home','car','case','globe','key','lock','camera','gift','leaf','flame','zap','crown','clipboard','sparkles'];
+
+function svg(name, cls){
+  const d = P[name] || P.sparkles;
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"'+(cls?' class="'+cls+'"':'')+'>'+d+'</svg>';
+}
+
+/* ============================================================
+   2) القوالب الجاهزة
+   ============================================================ */
+const PRESETS = [
+{ id:'critical', name:'التفكير الناقد', data:{
+  title:'مهارة التفكير الناقد', subtitle:'خطوات إتقان المهارة وتطبيقاتها العملية',
+  description:'إليك أهم المعلومات والتوجيهات التي تساعدك على تطوير التفكير المنطقي والناقد في حل المشكلات واتخاذ القرارات.',
+  badgeText:'معلومات مهمة لا بد التركيز عليها لتطوير الذات',
+  logo1:{title:'أكاديمية المهارات', subtitle:'التطوير الإداري', icon:'cap', img:''},
+  logo2:{title:'التفكير الناقد', subtitle:'منصة', icon:'brain'},
+  logo3:{title:'مركز الابتكار', subtitle:'رؤية 2030', icon:'sparkles', img:''},
+  sections:[
+    {title:'التعريف', text:'تحليل المعلومات والأفكار بطريقة منطقية ومستقلة.', icon:'book'},
+    {title:'الفوائد', text:'تحسين اتخاذ القرار وتقليل نسبة الأخطاء والتحيز.', icon:'trend'},
+    {title:'التطبيق', text:'اسأل عن المصدر، حلل الأدلة، ثم استنتج بإنصاف.', icon:'target'},
+    {title:'أخطاء شائعة', text:'الاعتماد على الآراء والشائعات دون أدلة موثوقة.', icon:'alert'}],
+  notesHeaderTitle:'مهم الملاحظة لتدقيق المفاهيم',
+  notes:[
+    {label:'مصدر المعلومة', ok:'أبحاث ودراسات موثوقة', no:'منشورات مجهولة المصدر'},
+    {label:'طريقة التحليل', ok:'تفكيك الحجج ومنطقيتها', no:'التأثر بالعاطفة والانحياز'}],
+  conditionsHeaderTitle:'معايير إتقان مهارة التفكير الناقد',
+  conditions:[
+    {title:'الاستمرارية في الممارسة', icon:'check'},
+    {title:'التدريب على حل المشكلات', icon:'brain'},
+    {title:'القراءة والاطلاع المستمر', icon:'book'},
+    {title:'التقييم الذاتي الدائم', icon:'award'}],
+  footer:'بالممارسة المستمرة والتطبيق العملي ستتطور المهارة تلقائياً.'
+}},
+{ id:'bag', name:'الحقيبة المدرسية', data:{
+  title:'الحقيبة المدرسية', subtitle:'نظراً لقرب موعد صرف الحقيبة المدرسية',
+  description:'بالذات الطلاب الجدد أول ابتدائي عليكم إكمال الآتي في الملف الموحد بمنصة الدعم والحماية الاجتماعية.',
+  badgeText:'معلومات مهمة لا بد التركيز عليها',
+  logo1:{title:'الضمان الاجتماعي', subtitle:'المطوّر', icon:'building', img:''},
+  logo2:{title:'بنك الضمان', subtitle:'الدعم', icon:'shield'},
+  logo3:{title:'حساب المواطن', subtitle:'الدعم الحكومي', icon:'users', img:''},
+  sections:[
+    {title:'المرحلة الدراسية', text:'تسجيل الروضة أو الابتدائي', icon:'calendar'},
+    {title:'المرحلة العمرية', text:'الطلاب من 6 إلى 18 سنة', icon:'school'},
+    {title:'الحالة الدراسية', text:'تحديث أيقونة يدرس في المنصة', icon:'cap'}],
+  notesHeaderTitle:'مهم الملاحظة لنزول الدعم',
+  notes:[
+    {label:'المؤهل التعليمي', ok:'هنا ابتدائي', no:'دون سن التعليم'},
+    {label:'الحالة الدراسية', ok:'لابد تعديل يدرس', no:'لا يدرس'}],
+  conditionsHeaderTitle:'معايير الاستحقاق للحقيبة المدرسية',
+  conditions:[
+    {title:'أن تكون الأسرة مؤهلة في الضمان', icon:'shield'},
+    {title:'أن يكون الطالب منتظماً دراسياً', icon:'book'},
+    {title:'أن يكون العمر بين 6 و18 عاماً', icon:'calendar'},
+    {title:'أن يكون الطالب في نظام نور', icon:'laptop'}],
+  footer:'في حال توفر تلك الشروط تُصرف المبالغ تلقائياً.'
+}},
+{ id:'blank', name:'صفحة فارغة', data:{
+  title:'اكتب العنوان هنا', subtitle:'العنوان الفرعي',
+  description:'اكتب هنا وصفاً موجزاً يشرح موضوع التصميم في سطرين.',
+  badgeText:'نقطة مهمة',
+  logo1:{title:'الجهة الأولى', subtitle:'', icon:'building', img:''},
+  logo2:{title:'الختم', subtitle:'رسمي', icon:'seal'},
+  logo3:{title:'الجهة الثانية', subtitle:'', icon:'globe', img:''},
+  sections:[{title:'عنوان البطاقة', text:'نص قصير يوضح الفكرة.', icon:'star'}],
+  notesHeaderTitle:'ملاحظات مهمة',
+  notes:[{label:'البند', ok:'الصحيح', no:'الخطأ'}],
+  conditionsHeaderTitle:'المعايير',
+  conditions:[{title:'المعيار الأول', icon:'check'}],
+  footer:'سطر ختامي يلخص الرسالة.'
+}}];
+
+const THEMES = [
+  {id:'royal_gold', name:'ملكي ذهبي', a:'#0A2D6C', b:'#F0C24B'},
+  {id:'emerald_gold', name:'زمردي', a:'#064E3B', b:'#EFC94C'},
+  {id:'ruby_gold', name:'عنّابي', a:'#7A1220', b:'#F3C55A'},
+  {id:'sapphire_silver', name:'فضي', a:'#0C4A6E', b:'#CBD6E1'},
+  {id:'midnight_dark', name:'ليلي', a:'#0E1420', b:'#E8B54B'}
+];
+const FONTS = ['Tajawal','Cairo','Readex Pro'];
+
+/* ============================================================
+   3) الحالة
+   ============================================================ */
+const S = {
+  data: JSON.parse(JSON.stringify(PRESETS[0].data)),
+  theme: { preset:'royal_gold', font:'Tajawal', pattern:true },
+  inline: true
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let toastT;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+
+/* ============================================================
+   4) رسم اللوحة
+   ============================================================ */
+function logoHTML(k, alt){
+  const L = S.data[k];
+  const inner = L.img
+    ? '<img src="'+L.img+'" alt="">'
+    : '<span class="mark">'+svg(L.icon||'building')+'</span>';
+  return '<div class="logo'+(alt?' alt':'')+'">'+inner+
+    '<b data-e="'+k+'.title">'+esc(L.title)+'</b>'+
+    (L.subtitle?'<span data-e="'+k+'.subtitle">'+esc(L.subtitle)+'</span>':'')+'</div>';
+}
+
+function renderCanvas(){
+  const d = S.data, t = S.theme;
+  const nCards = d.sections.length;
+  const cls = nCards>=4 ? 'c4' : (nCards===3 ? 'c3' : '');
+  const ed = S.inline ? ' contenteditable="true"' : '';
+
+  const html =
+  '<div id="canvas" data-theme="'+t.preset+'" dir="rtl" style="font-family:\''+t.font+'\',Tajawal,Tahoma,sans-serif">'+
+    '<div class="arc"></div>'+
+    (t.pattern?'<div class="pattern"></div>':'')+
+    '<div class="stack">'+
+      '<div class="logos">'+
+        logoHTML('logo1',false)+
+        '<div class="seal"><div class="seal-in">'+svg(d.logo2.icon||'seal')+
+          '<b>'+esc(d.logo2.title)+'</b>'+(d.logo2.subtitle?'<span>'+esc(d.logo2.subtitle)+'</span>':'')+
+        '</div></div>'+
+        logoHTML('logo3',true)+
+      '</div>'+
+      '<div class="plate"><div class="plate-in"><h1'+ed+' data-e="title">'+esc(d.title)+'</h1></div></div>'+
+      '<p class="sub"'+ed+' data-e="subtitle">'+esc(d.subtitle)+'</p>'+
+      '<div class="badge">'+svg('sparkles')+'<span'+ed+' data-e="badgeText">'+esc(d.badgeText)+'</span></div>'+
+      '<div class="lede"'+ed+' data-e="description">'+esc(d.description)+'</div>'+
+      (nCards ? '<div class="cards '+cls+'">'+ d.sections.map(function(s){
+        return '<div class="card"><span class="cico">'+svg(s.icon||'star')+'</span>'+
+               '<div><b>'+esc(s.title)+'</b><p>'+esc(s.text)+'</p></div></div>';
+      }).join('') +'</div>' : '')+
+      (d.notes.length ?
+        '<div class="ribbon">'+svg('arrowDown')+'<span'+ed+' data-e="notesHeaderTitle">'+esc(d.notesHeaderTitle)+'</span>'+svg('arrowDown')+'</div>'+
+        '<div class="notes">'+ d.notes.map(function(n){
+          return '<div class="note"><b>'+esc(n.label)+'</b><div class="vals">'+
+            '<span class="tag no">'+svg('x')+esc(n.no)+'</span>'+
+            '<span class="tag yes">'+svg('check')+esc(n.ok)+'</span></div></div>';
+        }).join('') +'</div>' : '')+
+      (d.conditions.length ?
+        '<div class="crest-bar"><div'+ed+' data-e="conditionsHeaderTitle">'+esc(d.conditionsHeaderTitle)+'</div></div>'+
+        '<div class="conds">'+ d.conditions.map(function(c){
+          return '<div class="cond"><span class="cico">'+svg(c.icon||'check')+'</span><b>'+esc(c.title)+'</b></div>';
+        }).join('') +'</div>' : '')+
+    '</div>'+
+    '<div class="foot">'+svg('bell')+'<span'+ed+' data-e="footer">'+esc(d.footer)+'</span></div>'+
+  '</div>';
+
+  $('#stageInner').innerHTML = html;
+  fitStage();
+
+  document.querySelectorAll('#canvas [contenteditable="true"]').forEach(function(el){
+    el.addEventListener('blur', function(){
+      const path = el.getAttribute('data-e'); const val = el.innerText.trim();
+      if(path.indexOf('.')>0){ const p=path.split('.'); S.data[p[0]][p[1]] = val; }
+      else S.data[path] = val;
+      const mirror = document.querySelector('[data-bind="'+path+'"]');
+      if(mirror) mirror.value = val;
+    });
+    el.addEventListener('keydown', function(e){ if(e.key==='Enter' && el.tagName==='H1'){ e.preventDefault(); el.blur(); } });
+  });
+}
+
+function fitStage(){
+  const stage = document.querySelector('.stage'); if(!stage) return;
+  const w = stage.clientWidth || 340;
+  const s = Math.min(1, w/800);
+  const inner = $('#stageInner');
+  inner.style.transform = 'scale('+s+')';
+  const c = $('#canvas');
+  inner.style.height = c ? (c.offsetHeight*s)+'px' : 'auto';
+}
+window.addEventListener('resize', fitStage);
+
+/* ============================================================
+   5) المحرر
+   ============================================================ */
+function fld(label, path, multiline, ph){
+  const val = path.indexOf('.')>0 ? S.data[path.split('.')[0]][path.split('.')[1]] : S.data[path];
+  const tag = multiline ? 'textarea' : 'input';
+  return '<div class="fld"><label>'+label+'</label>'+
+    '<'+tag+' class="inp" data-bind="'+path+'" placeholder="'+(ph||'')+'"'+
+    (multiline?' rows="3">'+esc(val)+'</textarea>':' value="'+esc(val)+'">')+
+  '</div>';
+}
+let ACC_OPEN = [true,false,false,false,false,false];
+let ACC_I = 0;
+function acc(icon, title, body){
+  const open = ACC_OPEN[ACC_I++];
+  return '<details class="acc"'+(open?' open':'')+'><summary><span class="ico">'+svg(icon)+'</span>'+title+
+  '<span class="chev">'+svg('down')+'</span></summary><div class="acc-body">'+body+'</div></details>';
+}
+
+function renderEditor(){
+  const d = S.data;
+  const live = document.querySelectorAll('#paneEdit .acc');
+  if(live.length) ACC_OPEN = Array.from(live).map(a=>a.open);
+  ACC_I = 0;
+  const keepY = window.scrollY;
+
+  const presetChips = '<div class="chips">'+ PRESETS.map(function(p){
+    return '<button class="chip" data-preset="'+p.id+'">'+p.name+'</button>';
+  }).join('') +'</div>';
+
+  const content = presetChips +
+    fld('العنوان الرئيسي','title') +
+    fld('العنوان الفرعي','subtitle') +
+    fld('نص الشارة','badgeText') +
+    fld('الوصف','description',true) +
+    fld('السطر الختامي','footer',true);
+
+  const logos = ['logo1','logo2','logo3'].map(function(k,i){
+    const L = d[k];
+    const names = {logo1:'الشعار الأيمن', logo2:'الختم الذهبي (الوسط)', logo3:'الشعار الأيسر'};
+    return '<div class="item"><div class="item-head"><span class="item-num">'+names[k]+'</span></div>'+
+      fld('الاسم', k+'.title') + fld('السطر الصغير', k+'.subtitle') +
+      '<div class="row">'+
+        '<button class="iconbtn" data-icon="'+k+'.icon">'+svg(L.icon||'building')+'<span>الأيقونة</span></button>'+
+        (k!=='logo2' ? '<button class="iconbtn" data-img="'+k+'">'+svg('image')+'<span>'+(L.img?'تغيير الصورة':'رفع صورة')+'</span></button>' : '')+
+      '</div>'+
+      (k!=='logo2' && L.img ? '<button class="iconbtn" data-rmimg="'+k+'">'+svg('trash')+'<span>إزالة الصورة</span></button>' : '')+
+    '</div>';
+  }).join('');
+
+  const cards = d.sections.map(function(s,i){
+    return '<div class="item"><div class="item-head"><span class="item-num">بطاقة '+(i+1)+'</span>'+
+      '<button class="mini" data-move="sections:'+i+':-1" aria-label="أعلى">'+svg('up')+'</button>'+
+      '<button class="mini" data-move="sections:'+i+':1" aria-label="أسفل">'+svg('down')+'</button>'+
+      '<button class="mini danger" data-del="sections:'+i+'" aria-label="حذف">'+svg('trash')+'</button></div>'+
+      '<input class="inp" data-list="sections:'+i+':title" value="'+esc(s.title)+'" placeholder="العنوان">'+
+      '<textarea class="inp" rows="2" data-list="sections:'+i+':text" placeholder="النص">'+esc(s.text)+'</textarea>'+
+      '<button class="iconbtn" data-icon="sections:'+i+':icon">'+svg(s.icon||'star')+'<span>الأيقونة</span></button></div>';
+  }).join('') + '<button class="addbtn" data-add="sections">'+svg('plus')+'إضافة بطاقة</button>';
+
+  const notes = fld('عنوان قسم الملاحظات','notesHeaderTitle') +
+    d.notes.map(function(n,i){
+      return '<div class="item"><div class="item-head"><span class="item-num">ملاحظة '+(i+1)+'</span>'+
+      '<button class="mini" data-move="notes:'+i+':-1" aria-label="أعلى">'+svg('up')+'</button>'+
+      '<button class="mini" data-move="notes:'+i+':1" aria-label="أسفل">'+svg('down')+'</button>'+
+      '<button class="mini danger" data-del="notes:'+i+'" aria-label="حذف">'+svg('trash')+'</button></div>'+
+      '<input class="inp" data-list="notes:'+i+':label" value="'+esc(n.label)+'" placeholder="البند">'+
+      '<div class="row">'+
+        '<input class="inp" data-list="notes:'+i+':ok" value="'+esc(n.ok)+'" placeholder="الصحيح">'+
+        '<input class="inp" data-list="notes:'+i+':no" value="'+esc(n.no)+'" placeholder="الخطأ">'+
+      '</div></div>';
+    }).join('') + '<button class="addbtn" data-add="notes">'+svg('plus')+'إضافة ملاحظة</button>';
+
+  const conds = fld('عنوان قسم المعايير','conditionsHeaderTitle') +
+    d.conditions.map(function(c,i){
+      return '<div class="item"><div class="item-head"><span class="item-num">معيار '+(i+1)+'</span>'+
+      '<button class="mini" data-move="conditions:'+i+':-1" aria-label="أعلى">'+svg('up')+'</button>'+
+      '<button class="mini" data-move="conditions:'+i+':1" aria-label="أسفل">'+svg('down')+'</button>'+
+      '<button class="mini danger" data-del="conditions:'+i+'" aria-label="حذف">'+svg('trash')+'</button></div>'+
+      '<input class="inp" data-list="conditions:'+i+':title" value="'+esc(c.title)+'" placeholder="نص المعيار">'+
+      '<button class="iconbtn" data-icon="conditions:'+i+':icon">'+svg(c.icon||'check')+'<span>الأيقونة</span></button></div>';
+    }).join('') + '<button class="addbtn" data-add="conditions">'+svg('plus')+'إضافة معيار</button>';
+
+  const look =
+    '<div class="fld"><label>لوحة الألوان</label><div class="swatches">'+
+      THEMES.map(function(t){
+        return '<button class="sw" data-theme="'+t.id+'" title="'+t.name+'" aria-label="'+t.name+'" aria-pressed="'+(S.theme.preset===t.id)+'">'+
+        '<i style="background:'+t.a+'"></i><i style="background:'+t.b+'"></i></button>';
+      }).join('') +
+    '</div></div>'+
+    '<div class="fld"><label>الخط</label><div class="chips">'+
+      FONTS.map(function(f){ return '<button class="chip" data-font="'+f+'" aria-pressed="'+(S.theme.font===f)+'" style="font-family:\''+f+'\',Tajawal">'+f+'</button>'; }).join('')+
+    '</div></div>'+
+    '<div class="switch"><span>نقشة الخلفية</span><button class="sw-track" data-toggle="pattern" aria-pressed="'+S.theme.pattern+'"><b></b></button></div>'+
+    '<div class="switch"><span>التحرير المباشر على التصميم</span><button class="sw-track" data-toggle="inline" aria-pressed="'+S.inline+'"><b></b></button></div>'+
+    '<p class="hint">مع التحرير المباشر: المس أي نص داخل التصميم في تبويب «معاينة» واكتب فوقه.</p>';
+
+  $('#paneEdit').innerHTML =
+    acc('type','النصوص والقوالب', content) +
+    acc('seal','الشعارات والختم', logos) +
+    acc('grid','البطاقات ('+d.sections.length+')', cards) +
+    acc('clipboard','جدول الملاحظات ('+d.notes.length+')', notes) +
+    acc('check','المعايير ('+d.conditions.length+')', conds) +
+    acc('palette','المظهر', look);
+  if(keepY) window.scrollTo(0, keepY);
+}
+
+function setPath(path, val){
+  if(path.indexOf('.')>0){ const p = path.split('.'); S.data[p[0]][p[1]] = val; }
+  else S.data[path] = val;
+}
+
+/* أحداث المحرر */
+$('#paneEdit').addEventListener('input', function(e){
+  const t = e.target;
+  if(t.dataset.bind){ setPath(t.dataset.bind, t.value); renderCanvas(); return; }
+  if(t.dataset.list){
+    const p = t.dataset.list.split(':');
+    S.data[p[0]][+p[1]][p[2]] = t.value; renderCanvas();
+  }
+});
+
+$('#paneEdit').addEventListener('click', function(e){
+  const b = e.target.closest('button'); if(!b) return;
+
+  if(b.dataset.preset){
+    const p = PRESETS.find(x=>x.id===b.dataset.preset);
+    S.data = JSON.parse(JSON.stringify(p.data));
+    renderEditor(); renderCanvas(); toast('تم تطبيق قالب «'+p.name+'»'); return;
+  }
+  if(b.dataset.add){
+    const k = b.dataset.add;
+    if(k==='sections') S.data.sections.push({title:'عنوان جديد', text:'نص قصير.', icon:'star'});
+    if(k==='notes') S.data.notes.push({label:'بند جديد', ok:'الصحيح', no:'الخطأ'});
+    if(k==='conditions') S.data.conditions.push({title:'معيار جديد', icon:'check'});
+    renderEditor(); renderCanvas(); return;
+  }
+  if(b.dataset.del){
+    const p = b.dataset.del.split(':');
+    S.data[p[0]].splice(+p[1],1); renderEditor(); renderCanvas(); return;
+  }
+  if(b.dataset.move){
+    const p = b.dataset.move.split(':'), arr = S.data[p[0]], i = +p[1], j = i + (+p[2]);
+    if(j<0 || j>=arr.length) return;
+    const tmp = arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+    renderEditor(); renderCanvas(); return;
+  }
+  if(b.dataset.icon){ openIconPicker(b.dataset.icon); return; }
+  if(b.dataset.img){ pendingImg = b.dataset.img; $('#imgPicker').click(); return; }
+  if(b.dataset.rmimg){ S.data[b.dataset.rmimg].img=''; renderEditor(); renderCanvas(); return; }
+  if(b.dataset.theme){ S.theme.preset = b.dataset.theme; renderEditor(); renderCanvas(); return; }
+  if(b.dataset.font){ S.theme.font = b.dataset.font; renderEditor(); renderCanvas(); return; }
+  if(b.dataset.toggle){
+    const k = b.dataset.toggle;
+    if(k==='pattern') S.theme.pattern = !S.theme.pattern; else S.inline = !S.inline;
+    renderEditor(); renderCanvas(); return;
+  }
+});
+
+/* ============================================================
+   6) منتقي الأيقونات
+   ============================================================ */
+let iconTarget = null, pendingImg = null;
+function openIconPicker(target){
+  iconTarget = target;
+  $('#iconGrid').innerHTML = ICON_KEYS.map(function(k){
+    return '<button data-k="'+k+'" aria-label="'+k+'">'+svg(k)+'</button>';
+  }).join('');
+  $('#sheet').classList.add('on');
+}
+$('#sheet').addEventListener('click', function(e){
+  if(e.target.closest('[data-close]')){ $('#sheet').classList.remove('on'); return; }
+  const b = e.target.closest('[data-k]'); if(!b || !iconTarget) return;
+  const k = b.dataset.k;
+  if(iconTarget.indexOf(':')>0){ const p=iconTarget.split(':'); S.data[p[0]][+p[1]][p[2]] = k; }
+  else { const p = iconTarget.split('.'); S.data[p[0]][p[1]] = k; }
+  $('#sheet').classList.remove('on');
+  renderEditor(); renderCanvas();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') $('#sheet').classList.remove('on'); });
+
+/* رفع صورة شعار */
+$('#imgPicker').addEventListener('change', function(e){
+  const f = e.target.files && e.target.files[0]; if(!f || !pendingImg) return;
+  if(f.size > 2.5*1024*1024){ toast('الصورة كبيرة — اختر صورة أقل من 2.5 ميجابايت'); return; }
+  const r = new FileReader();
+  r.onload = function(){ S.data[pendingImg].img = r.result; pendingImg=null; renderEditor(); renderCanvas(); };
+  r.readAsDataURL(f);
+  e.target.value='';
+});
+
+/* ============================================================
+   7) التبويبات
+   ============================================================ */
+function tab(which){
+  const edit = which==='edit';
+  $('#tabEdit').setAttribute('aria-selected', edit);
+  $('#tabView').setAttribute('aria-selected', !edit);
+  $('#paneEdit').classList.toggle('on', edit);
+  $('#paneView').classList.toggle('on', !edit);
+  if(!edit) requestAnimationFrame(fitStage);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+$('#tabEdit').onclick = ()=>tab('edit');
+$('#tabView').onclick = ()=>tab('view');
+
+/* ============================================================
+   8) التنزيل والحفظ
+   ============================================================ */
+function dl(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+}
+function slug(){
+  return (S.data.title||'تصميم').replace(/[\\/:*?"<>|]/g,'').trim().slice(0,40) || 'تصميم';
+}
+
+$('#btnSave').onclick = function(){
+  dl(new Blob([JSON.stringify({v:1, data:S.data, theme:S.theme}, null, 2)], {type:'application/json'}), slug()+'.json');
+  toast('تم حفظ ملف التصميم');
+};
+$('#btnOpen').onclick = ()=> $('#filePicker').click();
+$('#filePicker').addEventListener('change', function(e){
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = function(){
+    try{
+      const o = JSON.parse(r.result);
+      if(!o.data) throw 0;
+      S.data = o.data; if(o.theme) S.theme = o.theme;
+      renderEditor(); renderCanvas(); toast('تم فتح التصميم');
+    }catch(err){ toast('هذا الملف ليس ملف تصميم صالح'); }
+  };
+  r.readAsText(f); e.target.value='';
+});
+
+$('#btnPrint').onclick = function(){ tab('view'); setTimeout(()=>window.print(), 250); };
+
+$('#btnPng').onclick = async function(){
+  tab('view');
+  toast('جاري تجهيز الصورة…');
+  await new Promise(r=>setTimeout(r,120));
+  const node = $('#canvas');
+  try{
+    const w = node.offsetWidth, h = node.offsetHeight, scale = 2;
+    const clone = node.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    const xml = new XMLSerializer().serializeToString(clone);
+    const css = document.getElementById('appcss').textContent.replace(/&/g,'&amp;');
+    const svgStr =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'+
+      '<foreignObject x="0" y="0" width="100%" height="100%">'+
+      '<div xmlns="http://www.w3.org/1999/xhtml" dir="rtl"><style>'+css+'</style>'+xml+'</div>'+
+      '</foreignObject></svg>';
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise(function(res, rej){
+      img.onload = res; img.onerror = rej;
+      img.src = 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr);
+    });
+    const cv = document.createElement('canvas');
+    cv.width = w*scale; cv.height = h*scale;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,cv.width,cv.height);
+    ctx.drawImage(img, 0, 0, cv.width, cv.height);
+    cv.toBlob(function(blob){
+      if(!blob){ toast('تعذّر التصدير — استخدم «طباعة / PDF»'); return; }
+      dl(blob, slug()+'.png'); toast('تم تنزيل الصورة');
+    }, 'image/png');
+  }catch(err){
+    toast('تعذّر تصدير الصورة — استخدم زر الطباعة لحفظ PDF');
+  }
+};
+
+/* ============================================================
+   9) التشغيل
+   ============================================================ */
+$('#brandSeal').innerHTML = svg('seal');
+$('#btnOpen').innerHTML = svg('folder');
+$('#btnSave').innerHTML = svg('save');
+$('#btnPrint').innerHTML = svg('print');
+$('#btnPng').innerHTML = svg('download');
+$('#stageNote').innerHTML = svg('sparkles')+'<span>المس أي نص في التصميم لتعديله مباشرة</span>';
+$('.sheet-head .mini').innerHTML = svg('x');
+document.querySelectorAll('.seg button').forEach(function(b,i){
+  b.innerHTML = svg(i===0?'type':'image') + b.textContent;
+});
+
+renderEditor();
+renderCanvas();
+window.addEventListener('load', fitStage);
+
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+</script>
+</body>
+</html>
