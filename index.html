@@ -128,6 +128,21 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.65}
 .addbtn svg{width:16px;height:16px}
 .addbtn:active{background:#F2EEE4}
 
+.aibtn{
+  width:100%;padding:13px;border-radius:12px;font-weight:800;font-size:14px;
+  background:linear-gradient(180deg,#E2B75A,#B8862B);color:#241704;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 12px rgba(184,134,43,.35);
+}
+.aibtn svg{width:18px;height:18px}
+.aibtn:disabled{opacity:.55;box-shadow:none}
+.aibtn:active{transform:scale(.99)}
+.aistat{font-size:12.5px;font-weight:700;padding:9px 12px;border-radius:10px;display:none}
+.aistat.on{display:block}
+.aistat.wait{background:#FFF7E4;color:#7A5714;border:1.5px solid #F0DCAE}
+.aistat.bad{background:#FDECEC;color:#9B2226;border:1.5px solid #F3C3C3}
+.aistat.good{background:#E9F8EF;color:#166534;border:1.5px solid #B7E5C9}
+.keybox{border:1.5px dashed #CFC8B8;border-radius:12px;padding:11px;background:#FAF8F3;display:flex;flex-direction:column;gap:8px}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{
   padding:8px 12px;border-radius:999px;border:1.5px solid var(--sh-rule);background:#fff;
@@ -196,7 +211,7 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.65}
 }
 #canvas .logo .mark svg{width:23px;height:23px}
 #canvas .logo.alt .mark{background:linear-gradient(160deg,var(--gold),var(--gold2));color:#2E1D02}
-#canvas .logo img{max-height:44px;max-width:112px;object-fit:contain}
+#canvas .logo img{max-height:56px;max-width:130px;object-fit:contain}
 #canvas .logo b{font-size:13px;font-weight:800;color:var(--oncard);line-height:1.35}
 #canvas .logo span{font-size:10.5px;color:var(--txs)}
 
@@ -219,6 +234,8 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.65}
   box-shadow:inset 0 3px 10px rgba(0,0,0,.6);
 }
 #canvas .seal-in svg{width:27px;height:27px;color:#F0CE72}
+#canvas .seal-in.photo{background:#fff;padding:9px;box-shadow:inset 0 2px 8px rgba(0,0,0,.28)}
+#canvas .seal-in.photo img{max-width:100%;max-height:100%;object-fit:contain}
 #canvas .seal-in b{font-size:11px;font-weight:900;line-height:1.22;max-width:92px;overflow-wrap:break-word;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 #canvas .seal-in span{font-size:8.5px;color:#C9AE72;letter-spacing:.3px}
@@ -469,12 +486,12 @@ function svg(name, cls){
    2) القوالب الجاهزة
    ============================================================ */
 const PRESETS = [
-{ id:'critical', name:'التفكير الناقد', data:{
+{ id:'critical', name:'التفكير الناقد', theme:'royal_gold', data:{
   title:'مهارة التفكير الناقد', subtitle:'خطوات إتقان المهارة وتطبيقاتها العملية',
   description:'إليك أهم المعلومات والتوجيهات التي تساعدك على تطوير التفكير المنطقي والناقد في حل المشكلات واتخاذ القرارات.',
   badgeText:'معلومات مهمة لا بد التركيز عليها لتطوير الذات',
   logo1:{title:'أكاديمية المهارات', subtitle:'التطوير الإداري', icon:'cap', img:''},
-  logo2:{title:'التفكير الناقد', subtitle:'منصة', icon:'brain'},
+  logo2:{title:'التفكير الناقد', subtitle:'منصة', icon:'brain', img:''},
   logo3:{title:'مركز الابتكار', subtitle:'رؤية 2030', icon:'sparkles', img:''},
   sections:[
     {title:'التعريف', text:'تحليل المعلومات والأفكار بطريقة منطقية ومستقلة.', icon:'book'},
@@ -493,12 +510,12 @@ const PRESETS = [
     {title:'التقييم الذاتي الدائم', icon:'award'}],
   footer:'بالممارسة المستمرة والتطبيق العملي ستتطور المهارة تلقائياً.'
 }},
-{ id:'bag', name:'الحقيبة المدرسية', data:{
+{ id:'bag', name:'الحقيبة المدرسية', theme:'royal_gold', data:{
   title:'الحقيبة المدرسية', subtitle:'نظراً لقرب موعد صرف الحقيبة المدرسية',
   description:'بالذات الطلاب الجدد أول ابتدائي عليكم إكمال الآتي في الملف الموحد بمنصة الدعم والحماية الاجتماعية.',
   badgeText:'معلومات مهمة لا بد التركيز عليها',
   logo1:{title:'الضمان الاجتماعي', subtitle:'المطوّر', icon:'building', img:''},
-  logo2:{title:'بنك الضمان', subtitle:'الدعم', icon:'shield'},
+  logo2:{title:'بنك الضمان', subtitle:'الدعم', icon:'shield', img:''},
   logo3:{title:'حساب المواطن', subtitle:'الدعم الحكومي', icon:'users', img:''},
   sections:[
     {title:'المرحلة الدراسية', text:'تسجيل الروضة أو الابتدائي', icon:'calendar'},
@@ -516,12 +533,180 @@ const PRESETS = [
     {title:'أن يكون الطالب في نظام نور', icon:'laptop'}],
   footer:'في حال توفر تلك الشروط تُصرف المبالغ تلقائياً.'
 }},
-{ id:'blank', name:'صفحة فارغة', data:{
+{ id:'citizen', name:'تحديث حساب المواطن', theme:'royal_gold', data:{
+  title:'تحديث بيانات حساب المواطن', subtitle:'راجع بياناتك قبل انتهاء فترة التحديث',
+  description:'مراجعة بياناتك وبيانات التابعين بشكل دوري تضمن استمرار الدعم دون انقطاع أو تعليق.',
+  badgeText:'أي تغيير في الأسرة أو الدخل يحتاج تحديث',
+  logo1:{title:'حساب المواطن', subtitle:'الدعم النقدي', icon:'wallet', img:''},
+  logo2:{title:'تحديث البيانات', subtitle:'دوري', icon:'clipboard', img:''},
+  logo3:{title:'المنصة الرسمية', subtitle:'التسجيل والاستعلام', icon:'globe', img:''},
+  sections:[
+    {title:'الدخل', text:'حدّث بيانات الدخل لكل فرد في الأسرة.', icon:'wallet'},
+    {title:'التابعون', text:'أضف أو احذف التابعين عند أي تغيير.', icon:'users'},
+    {title:'السكن', text:'تأكد من صحة العنوان ونوع السكن.', icon:'home'},
+    {title:'الحساب البنكي', text:'الآيبان يكون باسم المستفيد الرئيسي.', icon:'file'}],
+  notesHeaderTitle:'مهم الانتباه له عند التحديث',
+  notes:[
+    {label:'بيانات الدخل', ok:'محدّثة بآخر راتب', no:'قديمة أو ناقصة'},
+    {label:'العنوان الوطني', ok:'مطابق للسكن الحالي', no:'عنوان قديم'}],
+  conditionsHeaderTitle:'أساسيات استمرار الدعم',
+  conditions:[
+    {title:'التحديث الدوري للبيانات', icon:'clock'},
+    {title:'صحة المعلومات المدخلة', icon:'check'},
+    {title:'العنوان الوطني مسجّل', icon:'pin'},
+    {title:'حساب بنكي فعّال', icon:'wallet'}],
+  footer:'أي تغيير في الدخل أو عدد أفراد الأسرة يحتاج تحديثاً فورياً.'
+}},
+{ id:'daman', name:'الضمان المطور', theme:'emerald_gold', data:{
+  title:'الضمان الاجتماعي المطور', subtitle:'ما تحتاج معرفته قبل تقديم الطلب',
+  description:'أكمل الملف الموحد في منصة الدعم والحماية الاجتماعية وتأكد من اكتمال بيانات جميع أفراد الأسرة.',
+  badgeText:'اكتمال الملف يختصر وقت دراسة الطلب',
+  logo1:{title:'الضمان المطور', subtitle:'البرنامج', icon:'shield', img:''},
+  logo2:{title:'منصة الدعم', subtitle:'الحماية الاجتماعية', icon:'seal', img:''},
+  logo3:{title:'الملف الموحد', subtitle:'بيانات الأسرة', icon:'file', img:''},
+  sections:[
+    {title:'الملف الموحد', text:'أكمل جميع الحقول المطلوبة دون نقص.', icon:'file'},
+    {title:'أفراد الأسرة', text:'سجّل التابعين وحالة كل واحد منهم.', icon:'users'},
+    {title:'الدخل', text:'وثّق كل مصادر الدخل بشكل صحيح.', icon:'wallet'},
+    {title:'المتابعة', text:'تابع حالة الطلب أولاً بأول في المنصة.', icon:'clock'}],
+  notesHeaderTitle:'مهم لاكتمال الملف',
+  notes:[
+    {label:'الحالة الدراسية', ok:'محدّثة (يدرس)', no:'غير محدّثة'},
+    {label:'بيانات السكن', ok:'موثّقة ومطابقة', no:'غير مسجّلة'}],
+  conditionsHeaderTitle:'أساسيات التقديم',
+  conditions:[
+    {title:'الإقامة الدائمة بالمملكة', icon:'home'},
+    {title:'اكتمال الملف الموحد', icon:'clipboard'},
+    {title:'صحة بيانات الدخل', icon:'wallet'},
+    {title:'تحديث بيانات التابعين', icon:'users'}],
+  footer:'اكتمال البيانات وصحتها هو أسرع طريق لدراسة الطلب.'
+}},
+{ id:'fraud', name:'الاحتيال الإلكتروني', theme:'ruby_gold', data:{
+  title:'احذر الاحتيال الإلكتروني', subtitle:'كيف تحمي حسابك وبياناتك الشخصية',
+  description:'المحتالون يتصلون باسم جهات رسمية ويطلبون بياناتك. لا توجد جهة رسمية تطلب كلمة المرور أو رمز التحقق.',
+  badgeText:'لا تشارك رمز التحقق مع أي شخص',
+  logo1:{title:'الأمن الرقمي', subtitle:'حماية البيانات', icon:'lock', img:''},
+  logo2:{title:'تحذير', subtitle:'انتبه', icon:'alert', img:''},
+  logo3:{title:'بلّغ فوراً', subtitle:'الجهة الرسمية', icon:'phone', img:''},
+  sections:[
+    {title:'الرسائل', text:'لا تفتح الروابط مجهولة المصدر.', icon:'mail'},
+    {title:'المكالمات', text:'لا تعطِ بياناتك عبر الهاتف مطلقاً.', icon:'phone'},
+    {title:'كلمة المرور', text:'قوية ومختلفة لكل حساب.', icon:'key'},
+    {title:'التحقق', text:'فعّل التحقق بخطوتين لكل حساباتك.', icon:'shield'}],
+  notesHeaderTitle:'الفرق بين الرسمي والمزيف',
+  notes:[
+    {label:'الرابط', ok:'ينتهي بـ gov.sa', no:'رابط مختصر غريب'},
+    {label:'طلب الرمز', ok:'لا يُطلب أبداً', no:'المتصل يطلبه منك'}],
+  conditionsHeaderTitle:'خطوات الحماية الأساسية',
+  conditions:[
+    {title:'لا تشارك رمز التحقق', icon:'lock'},
+    {title:'تحقق من مصدر الرسالة', icon:'check'},
+    {title:'حدّث تطبيقاتك دورياً', icon:'zap'},
+    {title:'بلّغ عن أي محاولة', icon:'phone'}],
+  footer:'إذا وصلك طلب مريب، أغلق واتصل بالجهة من رقمها الرسمي.'
+}},
+{ id:'school', name:'عودة المدارس', theme:'sapphire_silver', data:{
+  title:'استعداداً للعام الدراسي', subtitle:'قائمة تجهيز الطالب قبل بداية الدراسة',
+  description:'خطوات بسيطة تضمن بداية منظمة للطالب من اليوم الأول وتخفف ضغط الأسبوع الأول.',
+  badgeText:'جهّز مبكراً وتجنّب الزحام',
+  logo1:{title:'المدرسة', subtitle:'التعليم العام', icon:'school', img:''},
+  logo2:{title:'العام الدراسي', subtitle:'انطلاقة', icon:'calendar', img:''},
+  logo3:{title:'ولي الأمر', subtitle:'المتابعة', icon:'users', img:''},
+  sections:[
+    {title:'التسجيل', text:'تأكد من تسجيل الطالب في نظام نور.', icon:'laptop'},
+    {title:'المستلزمات', text:'جهّز الحقيبة والأدوات مبكراً.', icon:'case'},
+    {title:'الصحة', text:'راجع التطعيمات والفحص الدوري.', icon:'heart'},
+    {title:'النوم', text:'عدّل مواعيد النوم تدريجياً قبل البداية.', icon:'clock'}],
+  notesHeaderTitle:'قبل أول يوم دراسة',
+  notes:[
+    {label:'بيانات الطالب', ok:'محدّثة في المنصة', no:'ناقصة أو قديمة'},
+    {label:'المواصلات', ok:'مرتبة مسبقاً', no:'بدون ترتيب'}],
+  conditionsHeaderTitle:'مفاتيح بداية موفقة',
+  conditions:[
+    {title:'الاستعداد المبكر', icon:'clock'},
+    {title:'متابعة ولي الأمر', icon:'users'},
+    {title:'تنظيم الوقت', icon:'calendar'},
+    {title:'تغذية جيدة', icon:'leaf'}],
+  footer:'التنظيم من اليوم الأول ينعكس على الفصل الدراسي كاملاً.'
+}},
+{ id:'course', name:'دورة تدريبية', theme:'royal_gold', data:{
+  title:'دورة تدريبية مجانية', subtitle:'مقاعد محدودة — سارع بالتسجيل',
+  description:'دورة عملية تركّز على المهارات التطبيقية، مع شهادة حضور لكل المشاركين المستوفين للشروط.',
+  badgeText:'التسجيل مفتوح الآن',
+  logo1:{title:'الجهة المنظمة', subtitle:'التدريب', icon:'building', img:''},
+  logo2:{title:'دورة', subtitle:'تدريب', icon:'award', img:''},
+  logo3:{title:'التسجيل', subtitle:'إلكتروني', icon:'clipboard', img:''},
+  sections:[
+    {title:'الموعد', text:'حدد اليوم والتاريخ والساعة هنا.', icon:'calendar'},
+    {title:'المكان', text:'حضورياً أو عن بُعد عبر الرابط.', icon:'pin'},
+    {title:'المدرب', text:'خبرة عملية في المجال.', icon:'users'},
+    {title:'الشهادة', text:'شهادة حضور للمشاركين.', icon:'award'}],
+  notesHeaderTitle:'قبل تعبئة نموذج التسجيل',
+  notes:[
+    {label:'طريقة الحضور', ok:'محددة بوضوح', no:'تسجيل بدون اختيار'},
+    {label:'بيانات التواصل', ok:'اسم ورقم صحيح', no:'بيانات ناقصة'}],
+  conditionsHeaderTitle:'شروط الحضور',
+  conditions:[
+    {title:'التسجيل المسبق', icon:'clipboard'},
+    {title:'الالتزام بالموعد', icon:'clock'},
+    {title:'إحضار جهاز محمول', icon:'laptop'},
+    {title:'المشاركة الفعّالة', icon:'star'}],
+  footer:'المقاعد محدودة وتُخصّص حسب أسبقية التسجيل.'
+}},
+{ id:'offer', name:'عرض تجاري', theme:'midnight_dark', data:{
+  title:'عروض نهاية الموسم', subtitle:'خصومات لفترة محدودة على تشكيلة مختارة',
+  description:'تشكيلة مختارة بأسعار مخفّضة مع توصيل سريع لجميع المناطق وضمان استبدال.',
+  badgeText:'العرض ساري حتى نفاد الكمية',
+  logo1:{title:'المتجر', subtitle:'التسوق', icon:'case', img:''},
+  logo2:{title:'عرض', subtitle:'خصم', icon:'gift', img:''},
+  logo3:{title:'التوصيل', subtitle:'سريع', icon:'car', img:''},
+  sections:[
+    {title:'الخصم', text:'حدد نسبة الخصم والمنتجات المشمولة.', icon:'trend'},
+    {title:'التوصيل', text:'مدة التوصيل داخل المدن الرئيسية.', icon:'car'},
+    {title:'الدفع', text:'جميع وسائل الدفع متاحة.', icon:'wallet'},
+    {title:'الضمان', text:'إمكانية الاستبدال خلال المدة المحددة.', icon:'shield'}],
+  notesHeaderTitle:'قبل إتمام الطلب',
+  notes:[
+    {label:'المقاس', ok:'حسب جدول المقاسات', no:'اختيار عشوائي'},
+    {label:'العنوان', ok:'مفصّل مع رقم صحيح', no:'عنوان ناقص'}],
+  conditionsHeaderTitle:'شروط العرض',
+  conditions:[
+    {title:'لفترة محدودة', icon:'clock'},
+    {title:'حسب توفر الكمية', icon:'case'},
+    {title:'لا يشمل المخفّض مسبقاً', icon:'alert'},
+    {title:'داخل المملكة', icon:'pin'}],
+  footer:'اطّلع على شروط الاستبدال قبل إتمام عملية الشراء.'
+}},
+{ id:'health', name:'عادات صحية', theme:'emerald_gold', data:{
+  title:'عادات يومية لصحة أفضل', subtitle:'خطوات بسيطة يصنع الاستمرار فيها فرقاً',
+  description:'تغييرات صغيرة في روتينك اليومي تنعكس على طاقتك ونومك ومزاجك خلال أسابيع قليلة.',
+  badgeText:'ابدأ بعادة واحدة فقط',
+  logo1:{title:'صحتك', subtitle:'أولاً', icon:'heart', img:''},
+  logo2:{title:'نمط حياة', subtitle:'يومي', icon:'leaf', img:''},
+  logo3:{title:'الاستمرارية', subtitle:'المفتاح', icon:'clock', img:''},
+  sections:[
+    {title:'الماء', text:'وزّع شرب الماء على مدار اليوم.', icon:'leaf'},
+    {title:'الحركة', text:'مشي يومي منتظم ولو لمدة قصيرة.', icon:'zap'},
+    {title:'النوم', text:'مواعيد نوم ثابتة كل يوم.', icon:'clock'},
+    {title:'الغذاء', text:'وجبات متوازنة وغير متسرعة.', icon:'heart'}],
+  notesHeaderTitle:'فروق بسيطة تصنع النتيجة',
+  notes:[
+    {label:'بداية اليوم', ok:'فطور متوازن', no:'مشروبات الطاقة'},
+    {label:'وقت النوم', ok:'ثابت ومنتظم', no:'مختلف كل ليلة'}],
+  conditionsHeaderTitle:'مفاتيح الاستمرار',
+  conditions:[
+    {title:'البدء التدريجي', icon:'trend'},
+    {title:'المتابعة اليومية', icon:'calendar'},
+    {title:'نوم منتظم', icon:'clock'},
+    {title:'حركة يومية', icon:'zap'}],
+  footer:'الاستمرار البسيط أفضل بكثير من الحماس المؤقت.'
+}},
+{ id:'blank', name:'صفحة فارغة', theme:'royal_gold', data:{
   title:'اكتب العنوان هنا', subtitle:'العنوان الفرعي',
   description:'اكتب هنا وصفاً موجزاً يشرح موضوع التصميم في سطرين.',
   badgeText:'نقطة مهمة',
   logo1:{title:'الجهة الأولى', subtitle:'', icon:'building', img:''},
-  logo2:{title:'الختم', subtitle:'رسمي', icon:'seal'},
+  logo2:{title:'الختم', subtitle:'رسمي', icon:'seal', img:''},
   logo3:{title:'الجهة الثانية', subtitle:'', icon:'globe', img:''},
   sections:[{title:'عنوان البطاقة', text:'نص قصير يوضح الفكرة.', icon:'star'}],
   notesHeaderTitle:'ملاحظات مهمة',
@@ -582,9 +767,11 @@ function renderCanvas(){
     '<div class="stack">'+
       '<div class="logos">'+
         logoHTML('logo1',false)+
-        '<div class="seal"><div class="seal-in">'+svg(d.logo2.icon||'seal')+
-          '<b>'+esc(d.logo2.title)+'</b>'+(d.logo2.subtitle?'<span>'+esc(d.logo2.subtitle)+'</span>':'')+
-        '</div></div>'+
+        (d.logo2.img
+          ? '<div class="seal"><div class="seal-in photo"><img src="'+d.logo2.img+'" alt=""/></div></div>'
+          : '<div class="seal"><div class="seal-in">'+svg(d.logo2.icon||'seal')+
+            '<b>'+esc(d.logo2.title)+'</b>'+(d.logo2.subtitle?'<span>'+esc(d.logo2.subtitle)+'</span>':'')+
+            '</div></div>')+
         logoHTML('logo3',true)+
       '</div>'+
       '<div class="plate"><div class="plate-in"><h1'+ed+' data-e="title">'+esc(d.title)+'</h1></div></div>'+
@@ -638,6 +825,167 @@ function fitStage(){
 window.addEventListener('resize', fitStage);
 
 /* ============================================================
+   4.5) محرك التوليد بالذكاء الاصطناعي (Gemini)
+   ============================================================ */
+const AI = { key:'', model:'', topic:'', busy:false };
+const GB = 'https://generativelanguage.googleapis.com/v1beta';
+
+function aiLoad(){ try{
+  AI.key = localStorage.getItem('mersam_key') || '';
+  AI.model = localStorage.getItem('mersam_model') || '';
+}catch(e){} }
+function aiSave(){ try{
+  localStorage.setItem('mersam_key', AI.key);
+  localStorage.setItem('mersam_model', AI.model);
+}catch(e){} }
+
+function aiStatus(kind, msg){
+  const el = document.getElementById('aiStat'); if(!el) return;
+  el.className = 'aistat on ' + kind; el.textContent = msg;
+}
+
+function aiErr(status){
+  if(status===400) return 'المفتاح غير صحيح — راجعه وأعد المحاولة.';
+  if(status===403) return 'المفتاح مرفوض أو غير مُفعّل لهذه الخدمة.';
+  if(status===429) return 'تجاوزت الحد المجاني — انتظر دقيقة وحاول مرة أخرى.';
+  if(status>=500) return 'الخدمة مشغولة حالياً — حاول بعد قليل.';
+  return 'تعذّر الاتصال (رمز '+status+').';
+}
+
+async function aiPickModel(){
+  if(AI.model) return AI.model;
+  const r = await fetch(GB+'/models?key='+encodeURIComponent(AI.key));
+  if(!r.ok) throw new Error(aiErr(r.status));
+  const j = await r.json();
+  const names = (j.models||[])
+    .filter(function(m){ return (m.supportedGenerationMethods||[]).indexOf('generateContent')>=0; })
+    .map(function(m){ return String(m.name||'').replace('models/',''); })
+    .filter(function(n){ return n && !/(embed|image|tts|audio|vision|live|thinking)/i.test(n); });
+  if(!names.length) throw new Error('لا توجد نماذج متاحة لهذا المفتاح.');
+  function score(n){
+    let v = 0;
+    if(/flash/i.test(n)) v += 100;
+    if(/lite/i.test(n)) v -= 35;
+    if(/preview|exp|\d{3,}/i.test(n)) v -= 45;
+    if(/pro/i.test(n)) v -= 15;
+    const m = n.match(/(\d+(?:\.\d+)?)/);
+    v += m ? parseFloat(m[1])*6 : 0;
+    return v;
+  }
+  names.sort(function(a,b){ return score(b)-score(a); });
+  AI.model = names[0]; aiSave();
+  return AI.model;
+}
+
+function aiPrompt(topic){
+  return [
+    'أنت مصمم محتوى إنفوجرافيك عربي احترافي.',
+    'الموضوع المطلوب: "'+topic+'"',
+    '',
+    'أنشئ محتوى إنفوجرافيك كامل باللغة العربية الفصحى المبسّطة، ثم أعد النتيجة ككائن JSON فقط دون أي شرح أو علامات.',
+    'الحقول المطلوبة بهذا الشكل تماماً:',
+    '{',
+    ' "title": عنوان رئيسي قصير جداً (٢-٤ كلمات),',
+    ' "subtitle": عنوان فرعي (٤-٧ كلمات),',
+    ' "description": فقرة واحدة (١٥-٢٥ كلمة),',
+    ' "badgeText": عبارة تنبيه قصيرة (٣-٦ كلمات),',
+    ' "logo1": {"title": اسم جهة (كلمتان), "subtitle": وصف (كلمة أو كلمتان), "icon": اسم أيقونة},',
+    ' "logo2": {"title": كلمة أو كلمتان للختم الأوسط, "subtitle": كلمة واحدة, "icon": اسم أيقونة},',
+    ' "logo3": {"title": اسم جهة (كلمتان), "subtitle": وصف (كلمة أو كلمتان), "icon": اسم أيقونة},',
+    ' "sections": أربعة عناصر [{"title": عنوان (كلمة أو كلمتان), "text": شرح (٦-١٠ كلمات), "icon": اسم أيقونة}],',
+    ' "notesHeaderTitle": عنوان قسم المقارنة (٣-٥ كلمات),',
+    ' "notes": عنصران [{"label": البند (كلمتان), "ok": الممارسة الصحيحة (٢-٤ كلمات), "no": الممارسة الخاطئة (٢-٤ كلمات)}],',
+    ' "conditionsHeaderTitle": عنوان قسم المعايير (٣-٦ كلمات),',
+    ' "conditions": أربعة عناصر [{"title": معيار (٢-٤ كلمات), "icon": اسم أيقونة}],',
+    ' "footer": جملة ختامية (٨-١٤ كلمة)',
+    '}',
+    '',
+    'قيمة "icon" يجب أن تكون واحدة من هذه الأسماء حصراً:',
+    ICON_KEYS.join(', '),
+    '',
+    'التزم بحدود عدد الكلمات بدقة لأن التصميم ضيّق المساحة. لا تكرر نفس الأيقونة أكثر من مرتين.'
+  ].join('\n');
+}
+
+async function aiGenerate(topic){
+  const model = await aiPickModel();
+  const body = {
+    contents:[{ role:'user', parts:[{ text: aiPrompt(topic) }] }],
+    generationConfig:{ temperature:0.9, responseMimeType:'application/json' }
+  };
+  const r = await fetch(GB+'/models/'+model+':generateContent?key='+encodeURIComponent(AI.key), {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+  });
+  if(!r.ok){
+    if(r.status===404){ AI.model=''; aiSave(); throw new Error('النموذج غير متاح — اضغط توليد مرة أخرى.'); }
+    throw new Error(aiErr(r.status));
+  }
+  const j = await r.json();
+  let txt = '';
+  try{
+    const parts = j.candidates[0].content.parts || [];
+    for(let i=0;i<parts.length;i++) txt += (parts[i].text || '');
+  }catch(e){ throw new Error('لم يصل محتوى من النموذج — حاول مرة أخرى.'); }
+  txt = txt.replace(/```json/gi,'').replace(/```/g,'').trim();
+  const a = txt.indexOf('{'), b = txt.lastIndexOf('}');
+  if(a<0 || b<a) throw new Error('الرد غير مفهوم — أعد المحاولة.');
+  return JSON.parse(txt.slice(a, b+1));
+}
+
+function aiApply(g){
+  const d = S.data;
+  const ic = function(n){ return ICON_KEYS.indexOf(n)>=0 ? n : 'star'; };
+  const st = function(v, fb){ return (typeof v==='string' && v.trim()) ? v.trim() : fb; };
+
+  d.title = st(g.title, d.title);
+  d.subtitle = st(g.subtitle, d.subtitle);
+  d.description = st(g.description, d.description);
+  d.badgeText = st(g.badgeText, d.badgeText);
+  d.footer = st(g.footer, d.footer);
+  d.notesHeaderTitle = st(g.notesHeaderTitle, d.notesHeaderTitle);
+  d.conditionsHeaderTitle = st(g.conditionsHeaderTitle, d.conditionsHeaderTitle);
+
+  ['logo1','logo2','logo3'].forEach(function(k){
+    const L = g[k]; if(!L || typeof L!=='object') return;
+    d[k].title = st(L.title, d[k].title);
+    d[k].subtitle = st(L.subtitle, d[k].subtitle);
+    d[k].icon = ic(L.icon);            /* الصور المرفوعة تبقى كما هي */
+  });
+
+  if(Array.isArray(g.sections) && g.sections.length)
+    d.sections = g.sections.slice(0,4).map(function(x){
+      return { title: st(x.title,'عنوان'), text: st(x.text,''), icon: ic(x.icon) }; });
+  if(Array.isArray(g.notes) && g.notes.length)
+    d.notes = g.notes.slice(0,3).map(function(x){
+      return { label: st(x.label,'البند'), ok: st(x.ok,'الصحيح'), no: st(x.no,'الخطأ') }; });
+  if(Array.isArray(g.conditions) && g.conditions.length)
+    d.conditions = g.conditions.slice(0,4).map(function(x){
+      return { title: st(x.title,'معيار'), icon: ic(x.icon) }; });
+}
+
+async function aiRun(){
+  if(AI.busy) return;
+  const topic = (AI.topic||'').trim();
+  if(!AI.key){ aiStatus('bad','أضف مفتاح Gemini أولاً من الصندوق بالأسفل.'); return; }
+  if(!topic){ aiStatus('bad','اكتب الموضوع أولاً.'); return; }
+  AI.busy = true;
+  const btn = document.getElementById('aiGo'); if(btn) btn.disabled = true;
+  aiStatus('wait','جاري التوليد… قد يستغرق ١٠–٣٠ ثانية');
+  try{
+    const g = await aiGenerate(topic);
+    aiApply(g);
+    renderEditor(); renderCanvas();
+    aiStatus('good','تم التوليد ✓ راجع النصوص وعدّل ما تحتاجه');
+    toast('تم توليد المحتوى');
+  }catch(e){
+    aiStatus('bad', e && e.message ? e.message : 'حدث خطأ غير متوقع.');
+  }finally{
+    AI.busy = false;
+    const b2 = document.getElementById('aiGo'); if(b2) b2.disabled = false;
+  }
+}
+
+/* ============================================================
    5) المحرر
    ============================================================ */
 function fld(label, path, multiline, ph){
@@ -648,13 +996,15 @@ function fld(label, path, multiline, ph){
     (multiline?' rows="3">'+esc(val)+'</textarea>':' value="'+esc(val)+'">')+
   '</div>';
 }
-let ACC_OPEN = [true,false,false,false,false,false];
+let ACC_OPEN = [true,false,false,false,false,false,false];
 let ACC_I = 0;
 function acc(icon, title, body){
   const open = ACC_OPEN[ACC_I++];
   return '<details class="acc"'+(open?' open':'')+'><summary><span class="ico">'+svg(icon)+'</span>'+title+
   '<span class="chev">'+svg('down')+'</span></summary><div class="acc-body">'+body+'</div></details>';
 }
+
+const AI_IDEAS = ['إرشادات السلامة المنزلية','مهارة إدارة الوقت','التوعية بترشيد استهلاك الماء','خطوات فتح مشروع صغير'];
 
 function renderEditor(){
   const d = S.data;
@@ -681,9 +1031,9 @@ function renderEditor(){
       fld('الاسم', k+'.title') + fld('السطر الصغير', k+'.subtitle') +
       '<div class="row">'+
         '<button class="iconbtn" data-icon="'+k+'.icon">'+svg(L.icon||'building')+'<span>الأيقونة</span></button>'+
-        (k!=='logo2' ? '<button class="iconbtn" data-img="'+k+'">'+svg('image')+'<span>'+(L.img?'تغيير الصورة':'رفع صورة')+'</span></button>' : '')+
+        '<button class="iconbtn" data-img="'+k+'">'+svg('image')+'<span>'+(L.img?'تغيير الصورة':'رفع صورة')+'</span></button>'+
       '</div>'+
-      (k!=='logo2' && L.img ? '<button class="iconbtn" data-rmimg="'+k+'">'+svg('trash')+'<span>إزالة الصورة</span></button>' : '')+
+      (L.img ? '<button class="iconbtn" data-rmimg="'+k+'">'+svg('trash')+'<span>إزالة الصورة</span></button>' : '')+
     '</div>';
   }).join('');
 
@@ -734,7 +1084,23 @@ function renderEditor(){
     '<div class="switch"><span>التحرير المباشر على التصميم</span><button class="sw-track" data-toggle="inline" aria-pressed="'+S.inline+'"><b></b></button></div>'+
     '<p class="hint">مع التحرير المباشر: المس أي نص داخل التصميم في تبويب «معاينة» واكتب فوقه.</p>';
 
+  const aiPanel =
+    '<div class="fld"><label>الموضوع المطلوب</label>'+
+      '<textarea class="inp" rows="2" id="aiTopic" placeholder="اكتب موضوع التصميم هنا...">'+esc(AI.topic)+'</textarea></div>'+
+    '<div class="chips">'+ AI_IDEAS.map(function(t){
+      return '<button class="chip" data-topic="'+t+'">'+t+'</button>'; }).join('') +'</div>'+
+    '<button class="aibtn" id="aiGo" data-ai="go">'+svg('sparkles')+'<span>توليد المحتوى</span></button>'+
+    '<div class="aistat" id="aiStat"></div>'+
+    '<div class="keybox">'+
+      '<label style="font-size:11.5px;font-weight:700;color:var(--sh-mut)">مفتاح Gemini المجاني</label>'+
+      '<input class="inp" id="aiKey" type="password" value="'+esc(AI.key)+'" placeholder="AIza...">'+
+      '<button class="iconbtn" data-ai="savekey">'+svg('save')+'<span>حفظ المفتاح على الجهاز</span></button>'+
+      '<p class="hint">احصل على المفتاح مجاناً من aistudio.google.com/apikey — يُحفظ داخل جوالك فقط ولا يُرفع مع ملفات التطبيق.'+
+      (AI.model ? '<br>النموذج المستخدم: '+esc(AI.model) : '') + '</p>'+
+    '</div>';
+
   $('#paneEdit').innerHTML =
+    acc('sparkles','توليد بالذكاء الاصطناعي', aiPanel) +
     acc('type','النصوص والقوالب', content) +
     acc('seal','الشعارات والختم', logos) +
     acc('grid','البطاقات ('+d.sections.length+')', cards) +
@@ -752,6 +1118,8 @@ function setPath(path, val){
 /* أحداث المحرر */
 $('#paneEdit').addEventListener('input', function(e){
   const t = e.target;
+  if(t.id==='aiTopic'){ AI.topic = t.value; return; }
+  if(t.id==='aiKey'){ AI.key = t.value.trim(); return; }
   if(t.dataset.bind){ setPath(t.dataset.bind, t.value); renderCanvas(); return; }
   if(t.dataset.list){
     const p = t.dataset.list.split(':');
@@ -762,9 +1130,17 @@ $('#paneEdit').addEventListener('input', function(e){
 $('#paneEdit').addEventListener('click', function(e){
   const b = e.target.closest('button'); if(!b) return;
 
+  if(b.dataset.ai==='go'){ aiRun(); return; }
+  if(b.dataset.ai==='savekey'){ aiSave(); aiStatus('good','تم حفظ المفتاح على هذا الجهاز'); return; }
+  if(b.dataset.topic){
+    AI.topic = b.dataset.topic;
+    const ta = document.getElementById('aiTopic'); if(ta) ta.value = AI.topic;
+    return;
+  }
   if(b.dataset.preset){
     const p = PRESETS.find(x=>x.id===b.dataset.preset);
     S.data = JSON.parse(JSON.stringify(p.data));
+    if(p.theme) S.theme.preset = p.theme;
     renderEditor(); renderCanvas(); toast('تم تطبيق قالب «'+p.name+'»'); return;
   }
   if(b.dataset.add){
@@ -927,6 +1303,7 @@ document.querySelectorAll('.seg button').forEach(function(b,i){
   b.innerHTML = svg(i===0?'type':'image') + b.textContent;
 });
 
+aiLoad();
 renderEditor();
 renderCanvas();
 window.addEventListener('load', fitStage);
